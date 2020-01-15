@@ -1,1 +1,3 @@
-# complemental_skeletonizer
+# Complemental Skeleton Generator
+
+** WORK IN PROGRESS **
