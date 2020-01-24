@@ -49,7 +49,7 @@ def main():
     if u.SKELE_MESH: generateMesh(oSkele,scale,modelName=shortName+"Skeleton")
     
     if u.COMPOUND_MODIFICATIONS or u.REFLESH_MESH:
-        refleshed = reflesh(oSkele,iteration = u.RESOLUTION//8)
+        refleshed = f.smooth(reflesh(oSkele,iteration = u.RESOLUTION//8))
         print("Skeleton Refleshed")
         if u.REFLESH_MESH: generateMesh(refleshed,scale,modelName=shortName+"Refleshed")
         if u.COMPOUND_MODIFICATIONS: rawObject = refleshed
