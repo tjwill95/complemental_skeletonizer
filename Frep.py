@@ -14,12 +14,16 @@ def smoothKernel(d_u, d_v, buffer):
         d_v[i,j,k]=0
         for index in range(27):
             checkPos = (i+((index//9)%3-1),j+((index//3)%3-1),k+(index%3-1))
-            if checkPos[0]<dims[0] and checkPos[1]<dims[1] and checkPos[2]<dims[2] and min(checkPos)>0:
+            if checkPos[0]<dims[0] and checkPos[1]<dims[1] and checkPos[2]<dims[2] and min(checkPos)>=0:
                 d_v[i,j,k]+=d_u[checkPos]
                 count+=1
         d_v[i,j,k] = d_v[i,j,k]/count
 
 def smooth(u,iteration = 1,buffer=0):
+    #u = input voxel model
+    #iteration = number of times to run the algorithm
+    #buffer = Layers of voxels on the boundaries of the box that are left untouched
+    #Outputs a new matrix with each value set to the average of its neighbor's values.
     TPBX, TPBY, TPBZ = TPB, TPB, TPB
     dims = u.shape
     d_u = cuda.to_device(u)
@@ -115,6 +119,10 @@ def condenseKernel(d_u,d_uCondensed,buffer,minX,minY,minZ):
         d_uCondensed[i,j,k] = d_u[i+minX-buffer,j+minY-buffer,k+minZ-buffer]
     
 def condense(u,buffer):
+    #u = input voxel model
+    #buffer = number of layers of voxels around the boundaries that are left empty
+    #Outputs a new matrix that is fitted to the input voxel model, removing layers
+    #that don't store geometry.
     m, n, p = u.shape
     TPBX, TPBY, TPBZ = TPB, TPB, TPB
     minX, maxX, minY, maxY, minZ, maxZ = -1,-1,-1,-1,-1,-1

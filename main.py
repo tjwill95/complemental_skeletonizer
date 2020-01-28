@@ -4,7 +4,7 @@ import numpy as np
 import Frep as f
 from SDF3D import SDF3D
 from skeleton import skeleton, reflesh
-from visualizeSlice import multiPlot, slicePlot
+from visualizeSlice import multiPlot
 from meshExport import generateMesh
 from voxelize import voxelize
 
@@ -25,10 +25,21 @@ def main():
         scale[2] = scale[1]
     elif u.PRIMITIVE == True:
         shortName = u.PRIMITIVE_TYPE
-        x0 = np.linspace(-50,50,u.RESOLUTION)
-        y0, z0 = x0, x0
-        #origShape = f.cylinderX(x0,y0,z0,-40,40,20)
-        origShape = f.rect(x0,y0,z0,80,40,60)
+        if u.PRIMITIVE_TYPE == "Heart":
+            x0 = np.linspace(0.5,3.5,u.RESOLUTION)
+            y0, z0 = x0, x0
+            origShape = f.heart(x0,y0,z0,2,2,2)
+        else:
+            x0 = np.linspace(-50,50,u.RESOLUTION)
+            y0, z0 = x0, x0
+            if u.PRIMITIVE_TYPE == "Cube":
+                origShape = f.rect(x0,y0,z0,80,80,80)
+            elif u.PRIMITIVE_TYPE == "Silo":
+                origShape = f.union(f.sphere(x0,y0,z0,40),f.cylinderY(x0,y0,z0,-40,0,40))
+            elif u.PRIMITIVE_TYPE == "Cylinder":
+                origShape = f.cylinderX(x0,y0,z0,-40,40,40)
+            else: #Sphere
+                origShape = f.sphere(x0,y0,z0,40)
     else:
         print("Provide either a file name or a desired primative.")
         return

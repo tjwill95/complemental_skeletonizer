@@ -38,6 +38,8 @@ def contourPlot(u,sliceLocation,titlestring='Plot',save=False,axis = "x"):
         fig.savefig(os.path.join(os.path.dirname(__file__),'Output',titlestring+'.png'))
 
 def multiPlot(u,objName,save):
+    #Plots a slice of matrix u cut at the halfway point, with slices taken 
+    #perpendicular to all three axes.
     x,y,z = u.shape
     contourPlot(u, x//2, titlestring=objName+'X', save=save, axis = "X")
     contourPlot(u, y//2, titlestring=objName+'Y', save=save, axis = "Y")

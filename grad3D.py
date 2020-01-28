@@ -4,6 +4,8 @@ TPB = 6
 
 @cuda.jit(device = True)
 def CFD(n,p,h):
+    #Takes the central finite difference between n and p, assuming equally spaced
+    # in negative and positive directions by step size h.
     return ((p-n)/(2*h))**2
 
 @cuda.jit
@@ -13,7 +15,6 @@ def grad3DKernel(d_u,d_v,maxVal):
     if i<dims[0] or j<dims[1] or k<dims[2]:
         h1 = 1 #step size
         h2 = 2**(1/2)
-        h3 = 5**(1/2)
 
         dx = CFD(d_u[i-1,j,k],d_u[i+1,j,k],h1)
         dy = CFD(d_u[i,j-1,k],d_u[i,j+1,k],h1)
@@ -27,6 +28,7 @@ def grad3DKernel(d_u,d_v,maxVal):
         dNzPx = CFD(d_u[i-1,j,k+1],d_u[i+1,j,k-1],h2)
         d5, d6, d7, d8, d9, d10 = 1,1,1,1,1,1
         """
+        h3 = 5**(1/2)
         dPPxPy = CFD(d_u[i-2,j-1,k],d_u[i+2,j+1,k],h3)
         dPPxNy = CFD(d_u[i-2,j+1,k],d_u[i+2,j-1,k],h3)
         dPPyPz = CFD(d_u[i,j-2,k-1],d_u[i,j+2,k+1],h3)

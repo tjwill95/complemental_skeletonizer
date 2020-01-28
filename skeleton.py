@@ -69,11 +69,6 @@ def refleshKernel(d_r,d_w,template):
             d_w[i,j,k]=min(d_w[i,j,k],updated)
 
 def reflesh(skeleton,iteration = 25,template = 5):
-    #u = a voxel model where the negative values indicate that the voxel is 
-    #inside the object, positive is outside, and 0 is on the surface.
-    #order = order of the norm calculation, usually 2.0
-    #Output formatted as follows: 
-    #u[i,j,k,:]=(i coord of Nearest Seed (NS), j coord of NS, k coord of NS, distance to NS)
     dims = skeleton.shape
     gridSize = [(dims[0]+TPB-1)//TPB, (dims[1]+TPB-1)//TPB,(dims[2]+TPB-1)//TPB]
     blockSize = [TPB, TPB, TPB]
