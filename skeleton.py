@@ -12,6 +12,12 @@ def skeletonKernel(d_u,d_uGrad,gThresh,sThresh):
             d_u[i,j,k] = 1
 
 def skeleton(u,gThresh,sThresh):
+    #u = input voxel model, must be SDF
+    #gThresh = gradient sensitivity, higher value = more skeletal voxels
+    #sThresh = Distance sensitivity, negative, higher magnitude = fewer voxels
+    #Outputs a matrix of the same shape as u, with negative voxels representing
+    #the skeleton of u, with their magnitudes representing the radial
+    #information needed to recreate the object.
     dims = u.shape
     d_u = cuda.to_device(u)
     d_uGrad = cuda.to_device(grad3D(u, maxVal = 1))
@@ -30,6 +36,10 @@ def addKernel(d_u,t):
             d_u[i,j,k] +=t
 
 def thickenSkeletonAdd(u,t):
+    #u = input skeleton
+    #t = added constant
+    #Outputs the skeleton after each skeletal voxel's value has had t added to
+    #it.
     dims = u.shape
     d_u = cuda.to_device(u)
     gridSize = [(dims[0]+TPB-1)//TPB, (dims[1]+TPB-1)//TPB,(dims[2]+TPB-1)//TPB]
@@ -47,6 +57,10 @@ def multKernel(d_u,t):
             d_u[i,j,k] *=t
 
 def thickenSkeletonMult(u,t):
+    #u = input skeleton
+    #t = multiplied constant
+    #Outputs the skeleton after each skeletal voxel's value has been multiplied
+    #by t.
     dims = u.shape
     d_u = cuda.to_device(u)
     gridSize = [(dims[0]+TPB-1)//TPB, (dims[1]+TPB-1)//TPB,(dims[2]+TPB-1)//TPB]
@@ -69,6 +83,11 @@ def refleshKernel(d_r,d_w,template):
             d_w[i,j,k]=min(d_w[i,j,k],updated)
 
 def reflesh(skeleton,iteration = 25,template = 5):
+    #skeleton = skeletal data of the object
+    #iteration = number of passes taken by the algorithm
+    #template = side length of the cube of checked values
+    #Outputs a matrix of the same size as skeleton that represents the object
+    #created by refleshing the skeleton.
     dims = skeleton.shape
     gridSize = [(dims[0]+TPB-1)//TPB, (dims[1]+TPB-1)//TPB,(dims[2]+TPB-1)//TPB]
     blockSize = [TPB, TPB, TPB]
