@@ -1,7 +1,7 @@
 from numba import cuda
 import numpy as np
 import math
-TPB = 6
+TPB = 8
 
 @cuda.jit
 def smoothKernel(d_u, d_v, buffer):
@@ -79,6 +79,35 @@ def subtract(u,v):
     blockSize = [TPB, TPB, TPB]
     boolKernel[gridSize, blockSize](d_u,d_v)
     return -1*d_u.copy_to_host()
+
+@cuda.jit
+def projectionKernel(d_u,X):
+    j,k = cuda.grid(2)
+    m,n,p = d_u.shape
+    if j < n and k < p:
+        if d_u[X+1,j,k]<=0:
+            d_u[X,j,k]=-1    
+
+def projection(u):
+    #u = voxelized model, negative = internal
+    #Assumes X is the vertical axis, projects entire part to lowest X value.
+    TPBY, TPBZ = TPB, TPB
+    m, n, p = u.shape
+    minX = -1
+    i = 0
+    while minX<0:
+        if np.amin(u[i,:,:])<0:
+            minX = i
+        else:
+            i += 1
+    X = m-1
+    d_u = cuda.to_device(u)
+    gridDims = (n+TPBY-1)//TPBY, (p+TPBZ-1)//TPBZ
+    blockDims = TPBY, TPBZ
+    while X>minX:
+        X -= 1
+        projectionKernel[gridDims, blockDims](d_u,X)
+    return d_u.copy_to_host()
 
 @cuda.jit
 def translateKernel(d_u,d_v,x,y,z):
