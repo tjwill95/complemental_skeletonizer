@@ -185,6 +185,34 @@ def heart(x,y,z,cx,cy,cz):
     return d_u.copy_to_host()
 
 @cuda.jit
+def eggKernel(d_u, d_x, d_y, d_z,cx,cy,cz):
+    i,j,k = cuda.grid(3)
+    m,n,p = d_u.shape
+    if i < m and j < n and k < p:
+        x = d_x[i]-cx
+        y = d_y[j]-cy
+        z = d_z[k]-cz
+        d_u[i,j,k] = 9*x**2+16*(y**2+z**2)+2*x*(y**2+z**2)+(y**2+z**2)-144
+        
+def egg(x,y,z,cx,cy,cz):
+    #x,y,z = coordinate domain that we want the shape to live in, vectors
+    #cx,cy,cz = coordinates of the center of the egg shape.
+    #Outputs a 3D matrix with negative values showing the inside of our shape, 
+    #positive values showing the outside, and 0s to show the surfaces.
+    TPBX, TPBY, TPBZ = TPB, TPB, TPB
+    m = x.shape[0]
+    n = y.shape[0]
+    p = z.shape[0]
+    d_x = cuda.to_device(x)
+    d_y = cuda.to_device(y)
+    d_z = cuda.to_device(z)
+    d_u = cuda.device_array(shape = [m, n, p], dtype = np.float32)
+    gridDims = (m+TPBX-1)//TPBX, (n+TPBY-1)//TPBY, (n+TPBZ-1)//TPBZ
+    blockDims = TPBX, TPBY, TPBZ
+    eggKernel[gridDims, blockDims](d_u, d_x, d_y, d_z,cx,cy,cz)
+    return d_u.copy_to_host()
+
+@cuda.jit
 def rectKernel(d_u, d_x, d_y, d_z, xl, yl, zl, origin):
     i,j,k = cuda.grid(3)
     m,n,p = d_u.shape

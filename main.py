@@ -30,9 +30,14 @@ def main():
         #This section generates the desired primitive
         shortName = PRIMITIVE_TYPE
         if PRIMITIVE_TYPE == "Heart":
-            x0 = np.linspace(0.5,3.5,u.RESOLUTION)
+            x0 = np.linspace(-1.5,1.5,u.RESOLUTION)
             y0, z0 = x0, x0
-            origShape = f.heart(x0,y0,z0,2,2,2)
+            origShape = f.heart(x0,y0,z0,0,0,0)
+        elif PRIMITIVE_TYPE == "Egg":
+            x0 = np.linspace(-5,5,u.RESOLUTION)
+            y0, z0 = x0, x0
+            origShape = f.egg(x0,y0,z0,0,0,0)
+            #eggknowledgement to Molly Carton for this feature.
         else:
             x0 = np.linspace(-50,50,u.RESOLUTION)
             y0, z0 = x0, x0

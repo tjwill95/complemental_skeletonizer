@@ -1,7 +1,7 @@
 from skeleton import thickenSkeletonAdd, thickenSkeletonMult
 import Frep as f
 
-BUFFER = 10     #Number of empty layers around the object
+BUFFER = 5     #Number of empty layers around the object
 RESOLUTION = 150    #Maximum number of voxels in the X/Y directions
 #Gradient function sensitivity (Higher value = more gradient voxels)
 GTHRESH = 0.85
@@ -19,8 +19,9 @@ REFLESH_MESH = True #Return the PLY of the object recreated from the skeleton
 #Recreate the object with changes to the skeleton and complemental skeleton
 COMPOUND_MODIFICATIONS = False  
 
-COMPLEMENTAL_SKELETON = True    #Find the Complemental Skeleton of the object
+COMPLEMENTAL_SKELETON = False    #Find the Complemental Skeleton of the object
 COMP_SKELE_MESH = True          #Return the PLY of the Complemental Skeleton
+
 #Return the PLY of the object recreated from the complemental skeleton
 COMP_REFLESH_MESH = True
 
@@ -30,14 +31,15 @@ COMP_REFLESH_MESH = True
 
 #FILE_NAME = "Bird.stl"
 #FILE_NAME = "E.stl"
-#FILE_NAME = "3DBenchy.stl"
+FILE_NAME = "3DBenchy.stl"
 #FILE_NAME = "bust_low.stl"
 #FILE_NAME = "wavySurface.stl"
 #FILE_NAME = "hand_low.stl"
 
 #If you would prefer a simple geometric object, uncomment the one you want and
 #make sure that all FILE_NAME options are commented out.
-PRIMITIVE_TYPE = "Heart"
+#PRIMITIVE_TYPE = "Heart"
+#PRIMITIVE_TYPE = "Egg"
 #PRIMITIVE_TYPE = "Cube"
 #PRIMITIVE_TYPE = "Sphere"
 #PRIMITIVE_TYPE = "Cylinder"
@@ -49,6 +51,7 @@ def skeletonMods(u):
     #positive, and the magnitude of the voxel defines the size of the maximal
     #sphere at that point
     i,j,k = u.shape
+    #u = thickenSkeletonAdd(u,-6)
     """
     ray = j-1
     impact = -1
