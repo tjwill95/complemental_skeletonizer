@@ -3,6 +3,7 @@
 The Complemental Skeleton Generator is a python script written to enable the user to generate and manipulate the skeleton of a 3D model.  It also can generate and manipulate the Complemental Skeleton of the model.  The Complemental Skeleton is a new geometric construct that lies between the surface of the object and the original skeleton of the model.
 
 This code (and the algorithms within) are described by this paper: https://www.nasampe.org/store/ViewProduct.aspx?id=16280994
+
 The paper is also freely available here: https://www.researchgate.net/publication/342143916_Voxelized_Skeletal_Modeling_Techniques_via_Complemental_Skeletons
 
 The presentation (Provided by the SAMPE 2020 Virtual Series) accompanying the paper can be found for free here: https://www.youtube.com/watch?v=yGzciiRlPcc
